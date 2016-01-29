@@ -1,7 +1,8 @@
 # CCActionSheet
-![项目演示](https://github.com/maxmoo/CCActionSheet/p_sheet.gif)
-![](https://github.com/maxmoo/CCActionSheet/p_sheet.gif)
-<img src="https://github.com/maxmoo/CCActionSheet/p_sheet.gif" alt="" style="max-width:100%;">
+<!--![项目演示](https://github.com/maxmoo/CCActionSheet/p_sheet.gif)-->
+<!--![](https://github.com/maxmoo/CCActionSheet/p_sheet.gif)-->
+
+<img src="https://github.com/maxmoo/CCActionSheet/blob/master/p_sheet.gif" alt="" style="max-width:100%;">
 //模仿微信自定义actionSheet
 
 
