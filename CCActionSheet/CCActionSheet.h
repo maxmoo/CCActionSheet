@@ -26,8 +26,6 @@
  区分取消和选择,使用array
  回调使用协议
  */
-- (void)cc_actionSheetWithSelectArray:(NSArray *)array cancelTitle:(NSString *)cancel;
-
-
+- (void)cc_actionSheetWithSelectArray:(NSArray *)array cancelTitle:(NSString *)cancel delegate:(id<CCActionSheetDelegate>)delegate;
 
 @end

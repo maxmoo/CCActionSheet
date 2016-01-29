@@ -35,10 +35,11 @@
     return shareSheet;
 }
 
-- (void)cc_actionSheetWithSelectArray:(NSArray *)array cancelTitle:(NSString *)cancel{
+- (void)cc_actionSheetWithSelectArray:(NSArray *)array cancelTitle:(NSString *)cancel delegate:(id)delegate{
     
     self.selectArray = [NSArray arrayWithArray:array];
     self.cancelString = cancel;
+    self.delegate = delegate;
     
     if (!_sheetWindow) {
         [self initSheetWindow];

@@ -32,8 +32,7 @@
 
 - (IBAction)showCCActionSheet:(UIButton *)sender {
     NSArray *array = @[@"小视频",@"拍照",@"从手机相册选择"];
-    [[CCActionSheet shareSheet]cc_actionSheetWithSelectArray:array cancelTitle:@"取消"];
-    [CCActionSheet shareSheet].delegate = self;
+    [[CCActionSheet shareSheet]cc_actionSheetWithSelectArray:array cancelTitle:@"取消" delegate:self];
 }
 
 - (void)cc_actionSheetDidSelectedIndex:(NSInteger)index{
