@@ -7,8 +7,11 @@
 //
 
 #import "ViewController.h"
+#import "CCActionSheet.h"
 
-@interface ViewController ()
+
+@interface ViewController ()<CCActionSheetDelegate>
+- (IBAction)showCCActionSheet:(UIButton *)sender;
 
 @end
 
@@ -22,6 +25,16 @@
 - (void)didReceiveMemoryWarning {
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
+}
+
+- (IBAction)showCCActionSheet:(UIButton *)sender {
+    NSArray *array = @[@"小视频",@"拍照",@"从手机相册选择"];
+    [[CCActionSheet shareSheet]cc_actionSheetWithSelectArray:array cancelTitle:@"取消"];
+    [CCActionSheet shareSheet].delegate = self;
+}
+
+- (void)cc_actionSheetDidSelectedIndex:(NSInteger)index{
+    NSLog(@"selected index:%ld",(long)index);
 }
 
 @end

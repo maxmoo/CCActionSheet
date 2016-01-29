@@ -13,6 +13,7 @@
 		AA21592A1C5B40A400F4076C /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA2159281C5B40A400F4076C /* Main.storyboard */; };
 		AA21592C1C5B40A400F4076C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA21592B1C5B40A400F4076C /* Assets.xcassets */; };
 		AA21592F1C5B40A400F4076C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA21592D1C5B40A400F4076C /* LaunchScreen.storyboard */; };
+		AA2159381C5B410500F4076C /* CCActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2159371C5B410500F4076C /* CCActionSheet.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -26,6 +27,8 @@
 		AA21592B1C5B40A400F4076C /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		AA21592E1C5B40A400F4076C /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		AA2159301C5B40A400F4076C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AA2159361C5B410500F4076C /* CCActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCActionSheet.h; sourceTree = "<group>"; };
+		AA2159371C5B410500F4076C /* CCActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCActionSheet.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +70,8 @@
 				AA21592D1C5B40A400F4076C /* LaunchScreen.storyboard */,
 				AA2159301C5B40A400F4076C /* Info.plist */,
 				AA21591F1C5B40A400F4076C /* Supporting Files */,
+				AA2159361C5B410500F4076C /* CCActionSheet.h */,
+				AA2159371C5B410500F4076C /* CCActionSheet.m */,
 			);
 			path = CCActionSheet;
 			sourceTree = "<group>";
@@ -152,6 +157,7 @@
 				AA2159271C5B40A400F4076C /* ViewController.m in Sources */,
 				AA2159241C5B40A400F4076C /* AppDelegate.m in Sources */,
 				AA2159211C5B40A400F4076C /* main.m in Sources */,
+				AA2159381C5B410500F4076C /* CCActionSheet.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -262,6 +268,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = CCActionSheet/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.megahealth.MPlus.CCActionSheet;
 				PRODUCT_NAME = "$(TARGET_NAME)";
@@ -273,6 +280,7 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				INFOPLIST_FILE = CCActionSheet/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_BUNDLE_IDENTIFIER = com.megahealth.MPlus.CCActionSheet;
 				PRODUCT_NAME = "$(TARGET_NAME)";
