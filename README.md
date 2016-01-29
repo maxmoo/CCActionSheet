@@ -1,4 +1,6 @@
 # CCActionSheet
+![项目演示](https://github.com/maxmoo/CCActionSheet/p_sheet.gif)
+
 //模仿微信自定义actionSheet
 
 
