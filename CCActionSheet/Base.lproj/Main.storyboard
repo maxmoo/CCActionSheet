@@ -14,10 +14,9 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="Ygh-eI-OBs">
-                                <rect key="frame" x="108" y="164" width="83" height="30"/>
+                                <rect key="frame" x="264" y="0.0" width="98" height="75"/>
                                 <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                <color key="backgroundColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
-                                <state key="normal" title="actionSheet"/>
+                                <color key="backgroundColor" red="0.95294123890000004" green="0.2941176593" blue="0.13725490870000001" alpha="1" colorSpace="deviceRGB"/>
                                 <connections>
                                     <action selector="showCCActionSheet:" destination="BYZ-38-t0r" eventType="touchUpInside" id="lNF-6j-XkB"/>
                                 </connections>

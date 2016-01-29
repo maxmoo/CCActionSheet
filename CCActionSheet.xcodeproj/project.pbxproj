@@ -14,6 +14,7 @@
 		AA21592C1C5B40A400F4076C /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = AA21592B1C5B40A400F4076C /* Assets.xcassets */; };
 		AA21592F1C5B40A400F4076C /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = AA21592D1C5B40A400F4076C /* LaunchScreen.storyboard */; };
 		AA2159381C5B410500F4076C /* CCActionSheet.m in Sources */ = {isa = PBXBuildFile; fileRef = AA2159371C5B410500F4076C /* CCActionSheet.m */; };
+		AAE1DC561C5B6A5700568214 /* IMG_0477.PNG in Resources */ = {isa = PBXBuildFile; fileRef = AAE1DC551C5B6A5700568214 /* IMG_0477.PNG */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -29,6 +30,7 @@
 		AA2159301C5B40A400F4076C /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		AA2159361C5B410500F4076C /* CCActionSheet.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CCActionSheet.h; sourceTree = "<group>"; };
 		AA2159371C5B410500F4076C /* CCActionSheet.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CCActionSheet.m; sourceTree = "<group>"; };
+		AAE1DC551C5B6A5700568214 /* IMG_0477.PNG */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = IMG_0477.PNG; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -61,6 +63,7 @@
 		AA21591E1C5B40A400F4076C /* CCActionSheet */ = {
 			isa = PBXGroup;
 			children = (
+				AAE1DC551C5B6A5700568214 /* IMG_0477.PNG */,
 				AA2159221C5B40A400F4076C /* AppDelegate.h */,
 				AA2159231C5B40A400F4076C /* AppDelegate.m */,
 				AA2159251C5B40A400F4076C /* ViewController.h */,
@@ -142,6 +145,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				AA21592F1C5B40A400F4076C /* LaunchScreen.storyboard in Resources */,
+				AAE1DC561C5B6A5700568214 /* IMG_0477.PNG in Resources */,
 				AA21592C1C5B40A400F4076C /* Assets.xcassets in Resources */,
 				AA21592A1C5B40A400F4076C /* Main.storyboard in Resources */,
 			);
@@ -306,6 +310,7 @@
 				AA2159351C5B40A400F4076C /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

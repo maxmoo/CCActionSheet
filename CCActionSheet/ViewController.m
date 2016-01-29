@@ -19,6 +19,9 @@
 
 - (void)viewDidLoad {
     [super viewDidLoad];
+    UIImageView *imageView = [[UIImageView alloc] initWithFrame:self.view.bounds];
+    imageView.image = [UIImage imageNamed:@"IMG_0477"];
+    [self.view addSubview:imageView];
     // Do any additional setup after loading the view, typically from a nib.
 }
 
