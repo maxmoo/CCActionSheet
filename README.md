@@ -16,7 +16,7 @@
 
 
 
-use:
+使用：
 
 
     NSArray *array = @[@"小视频",@"拍照",@"从手机相册选择"];
@@ -24,8 +24,9 @@ use:
     
   实现协议，回调方法
 >
-- (void)cc_actionSheetDidSelectedIndex:(NSInteger)index{
+    - (void)cc_actionSheetDidSelectedIndex:(NSInteger)index{
     NSLog(@"selected index:%ld",(long)index);
-}
+    }
 >
+
 也可以到我的个人博客中查看一些细节：[http://www.justonecode.com](http://www.justonecode.com)。
