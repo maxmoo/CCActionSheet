@@ -15,6 +15,7 @@ CCActionSheet有两种形式的list
 
 ###使用
 回调方式使用了两种，这里只举例使用block回调。
+
 `初始化`
 >
     CCActionSheet *sheet = [[CCActionSheet alloc] initWithTitle:@"这是CCActionSheet" clickedAtIndex:^(NSInteger index) {
