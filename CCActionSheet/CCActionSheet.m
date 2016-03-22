@@ -342,11 +342,7 @@
         [label setFont:[UIFont systemFontOfSize:15.0f]];
         [label setText:self.titleText];
         [label setTextAlignment:NSTextAlignmentCenter];
-        if (self.titleColor) {
-            label.textColor = self.titleColor;
-        }else{
-            [label setTextColor:[UIColor grayColor]];
-        }
+        [label setTextColor:[UIColor grayColor]];
         [label setAdjustsFontSizeToFitWidth:YES];
 
         if (NSClassFromString(@"UIVisualEffectView") && !UIAccessibilityIsReduceTransparencyEnabled()) {

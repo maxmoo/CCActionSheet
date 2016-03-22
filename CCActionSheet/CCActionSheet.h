@@ -18,21 +18,17 @@ typedef void(^ClickedIndexBlock)(NSInteger index);
 /**
  *  @brief 被选中的按钮
  *
- *  @param actionSheet PQActionSheet
+ *  @param actionSheet CCActionSheet
  *  @param buttonIndex 选中按钮的Index(取消按钮默认为最后一个按钮)
  */
 - (void)actionSheet:(CCActionSheet *)actionSheet
 clickedButtonAtIndex:(NSInteger)buttonIndex;
 /**
- *  @brief PQActionSheet将要显示
- *
- *  @param actionSheet PQActionSheet
+ *  @brief CCActionSheet将要显示
  */
 - (void)willPresentActionSheet:(CCActionSheet *)actionSheet;
 /**
- *  @brief PQActionSheet已经显示
- *
- *  @param actionSheet PQActionSheet
+ *  @brief CCActionSheet已经显示
  */
 - (void)didPresentActionSheet:(CCActionSheet *)actionSheet;
 @end
@@ -63,7 +59,7 @@ typedef enum : NSUInteger {
 @property (strong, nonatomic) NSArray *iconImageNameArray;
 
 /**
- *  @brief 初始化PQActionSheet
+ *  @brief 初始化CCActionSheet
  *
  *  @param title                  ActionSheet标题
  *  @param delegate               委托
@@ -80,7 +76,7 @@ typedef enum : NSUInteger {
 
 
 /**
- *  @brief 初始化PQActionSheet(Block回调结果)
+ *  @brief 初始化CCActionSheet(Block回调结果)
  *
  *  @param title             ActionSheet标题
  *  @param block             Block回调选中的Index
