@@ -31,8 +31,18 @@
 }
 
 - (IBAction)showCCActionSheet:(UIButton *)sender {
-    NSArray *array = @[@"小视频",@"拍照",@"从手机相册选择"];
-    [[CCActionSheet shareSheet]cc_actionSheetWithSelectArray:array cancelTitle:@"取消" delegate:self];
+    
+    CCActionSheet *sheet = [[CCActionSheet alloc] initWithTitle:@"这是CCActionSheet" clickedAtIndex:^(NSInteger index) {
+        NSLog(@"selected: %ld",(long)index);
+    } cancelButtonTitle:@"取消" otherButtonTitles:@"我是第1个选择",@"我是第2个选择",@"我是第3个选择",@"我是第4个选择",@"我是第5个选择",@"我是第6个选择",@"我是第7个选择",nil];
+    
+    sheet.style = CCActionSheetStyleTextCenter;
+    
+    sheet.maxCount = 5;
+    
+    sheet.iconImageNameArray = @[@"icon_connected",@"icon_connected",@"icon_connected",@"icon_connected",@"icon_connected",@"icon_connected",@"icon_connected",@"icon_connected",@"icon_connected"];
+    
+    [sheet show];
 }
 
 - (void)cc_actionSheetDidSelectedIndex:(NSInteger)index{

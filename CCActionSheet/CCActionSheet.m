@@ -2,143 +2,531 @@
 //  CCActionSheet.m
 //  CCActionSheet
 //
-//  Created by maxmoo on 16/1/29.
+//  Created by maxmoo on 16/3/22.
 //  Copyright © 2016年 maxmoo. All rights reserved.
 //
 
 #import "CCActionSheet.h"
+#import "CCActionTableCell.h"
 
-#define CC_SCREEN_WIDTH ([UIScreen mainScreen].bounds.size.width)
-#define CC_SCREEN_HEIGHT ([UIScreen mainScreen].bounds.size.height)
+//@brief 按钮的高度
+#define ACTION_SHEET_BTN_HEIGHT 45.0f
+#define SHADOW_HEIGHT   5.0f
+@interface CCActionSheet () <UITableViewDelegate,UITableViewDataSource>
 
-#define cellHeight 45
+@property (copy,nonatomic) ClickedIndexBlock block;
+@property (strong,nonatomic) UITableView *tableView;
+@property (strong,nonatomic) UIView *backgroundView;
 
-@interface CCActionSheet()
+@property (strong,nonatomic) NSMutableArray *otherButtons;
 
-@property (nonatomic, strong) UIWindow *sheetWindow;
-@property (nonatomic, strong) NSArray *selectArray;
-@property (nonatomic, strong) NSString *cancelString;
-@property (nonatomic, strong) UIView *sheetView;
-@property (nonatomic, strong) UIView *backView;
-@property (nonatomic, strong) UITapGestureRecognizer *tapGesture;
+@property (assign,nonatomic) CGFloat tableViewHeight;
+@property (assign,nonatomic) NSInteger buttonCount;
 
 @end
 
 @implementation CCActionSheet
 
-+ (instancetype)shareSheet{
-    static id shareSheet;
-    static dispatch_once_t once;
-    dispatch_once(&once, ^{
-        shareSheet = [[[self class] alloc] init];
-    });
-    return shareSheet;
-}
-
-- (void)cc_actionSheetWithSelectArray:(NSArray *)array cancelTitle:(NSString *)cancel delegate:(id)delegate{
-    
-    self.selectArray = [NSArray arrayWithArray:array];
-    self.cancelString = cancel;
-    self.delegate = delegate;
-    
-    if (!_sheetWindow) {
-        [self initSheetWindow];
+- (instancetype)initWithTitle:(NSString *)title
+                     delegate:(id<CCActionSheetDelegate>)delegate
+            cancelButtonTitle:(NSString *)cancelButtonTitle
+            otherButtonTitles:(NSString *)otherButtonTitles, ...
+{
+    self = [super init];
+    if (self) {
+        
+        self.titleText = [title copy];
+        self.cancelText = [cancelButtonTitle copy];
+        self.delegate = delegate;
+        
+        self.otherButtons = [[NSMutableArray alloc]init];
+        
+        
+        // 获取可变参数
+        [_otherButtons addObject:otherButtonTitles];
+        va_list list;
+        NSString *curStr;
+        va_start(list, otherButtonTitles);
+        while ((curStr = va_arg(list, NSString *))) {
+            
+            [_otherButtons addObject:curStr];
+            
+        }
+        
+        //初始化子视图
+        [self installSubViews];
+        
+        
     }
-    _sheetWindow.hidden = NO;
-    
-    [self showSheetWithAnimation];
+    return self;
 }
 
-- (void)initSheetWindow{
-    _sheetWindow = [[UIWindow alloc] initWithFrame:CGRectMake(0, 0, CC_SCREEN_WIDTH, CC_SCREEN_HEIGHT)];
-    _sheetWindow.windowLevel = UIWindowLevelStatusBar;
-    _sheetWindow.backgroundColor = [UIColor clearColor];
-    
-    _sheetWindow.hidden = YES;
-
-    //zhezhao
-    _backView = [[UIView alloc] initWithFrame:_sheetWindow.bounds];
-    _backView.backgroundColor = [UIColor blackColor];
-    _backView.alpha = 0.0;
-    [_sheetWindow addSubview:_backView];
-    
-    _tapGesture = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(SingleTap:)];
-    _tapGesture.numberOfTapsRequired = 1;
-    [_backView addGestureRecognizer:_tapGesture];
-    
-    UIView *selectView = [self creatSelectButton];
-    
-    [_sheetWindow addSubview:selectView];
+- (instancetype)initWithTitle:(NSString *)title
+               clickedAtIndex:(ClickedIndexBlock)block
+            cancelButtonTitle:(NSString *)cancelButtonTitle
+            otherButtonTitles:(NSString *)otherButtonTitles, ...
+{
+    self = [super init];
+    if (self) {
+        
+        self.titleText = [title copy];
+        self.cancelText = [cancelButtonTitle copy];
+        self.block = block;
+        
+        self.otherButtons = [[NSMutableArray alloc]init];
+        
+        
+        // 获取可变参数
+        [_otherButtons addObject:otherButtonTitles];
+        va_list list;
+        NSString *curStr;
+        va_start(list, otherButtonTitles);
+        while ((curStr = va_arg(list, NSString *))) {
+            
+            [_otherButtons addObject:curStr];
+            
+        }
+        
+        //初始化子视图
+        [self installSubViews];
+        
+    }
+    return self;
 }
 
+- (void)dealloc {
+    
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+    
+}
 
-- (void)showSheetWithAnimation{
-    CGFloat viewHeight = cellHeight * (self.selectArray.count+1) + 5 + (self.selectArray.count - 2) * 2;
-    [UIView animateWithDuration:0.3 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        _sheetView.frame = CGRectMake(0, CC_SCREEN_HEIGHT - viewHeight, CC_SCREEN_WIDTH, viewHeight);
-        _backView.alpha = 0.2;
+#pragma mark - Public Method
+
+/**
+ *  @brief 显示ActionSheet
+ */
+- (void)show
+{
+    [[UIApplication sharedApplication].keyWindow addSubview:self];
+
+    self.tableView.frame = CGRectMake(0.0f,self.bounds.size.height, self.bounds.size.width, self.tableViewHeight);
+    __weak typeof(self) weakSelf = self;
+    
+    if([_delegate respondsToSelector:@selector(willPresentActionSheet:)]) {
+        
+        [_delegate willPresentActionSheet:weakSelf];
+        
+    }
+    
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        CGRect frame = weakSelf.tableView.frame;
+        CGSize screenSisze = [UIScreen mainScreen].bounds.size;
+        frame.origin.y = screenSisze.height - self.tableViewHeight;
+        
+        weakSelf.tableView.frame = frame;
+        
+        weakSelf.backgroundView.alpha = 0.3f;
+        
     } completion:^(BOOL finished) {
+        
+        
+        if([_delegate respondsToSelector:@selector(didPresentActionSheet:)]) {
+            
+            [_delegate didPresentActionSheet:weakSelf];
+            
+        }
+        
         
     }];
 }
 
-- (void)hidSheetWithAnimation{
-    CGFloat viewHeight = cellHeight * (self.selectArray.count+1) + 5 + (self.selectArray.count - 2) * 2;
-    [UIView animateWithDuration:0.2 delay:0 options:UIViewAnimationOptionCurveEaseInOut animations:^{
-        _sheetView.frame = CGRectMake(0, CC_SCREEN_HEIGHT, CC_SCREEN_WIDTH, viewHeight);
-        _backView.alpha = 0.0;
+/**
+ *  @brief 隐藏ActionSheet
+ */
+-(void)hide
+{
+    __weak typeof(self) weakSelf = self;
+    
+    
+    [UIView animateWithDuration:0.3 animations:^{
+        
+        CGRect frame = weakSelf.tableView.frame;
+        CGSize screenSisze = [UIScreen mainScreen].bounds.size;
+        frame.origin.y = screenSisze.height + self.tableViewHeight;
+        
+        weakSelf.tableView.frame = frame;
+        weakSelf.backgroundView.alpha = 0.0f;
+        
     } completion:^(BOOL finished) {
-        [self hidActionSheet];
+        
+        [weakSelf removeFromSuperview];
+        
     }];
 }
 
-- (UIView *)creatSelectButton{
-    CGFloat viewHeight = cellHeight * (self.selectArray.count+1) + 5 + (self.selectArray.count - 2) * 2;
-    _sheetView = [[UIView alloc] initWithFrame:CGRectMake(0, CC_SCREEN_HEIGHT, CC_SCREEN_WIDTH, viewHeight)];
-    _sheetView.backgroundColor = [UIColor colorWithRed:220/255.0 green:220/255.0 blue:220/255.0 alpha:1];
+/**
+ *  @brief 添加按钮
+ *
+ *  @param title 按钮标题
+ *
+ *  @return 按钮的Index
+ */
+- (NSInteger)addButtonWithTitle:(NSString *)title {
     
-    for (int i = 0; i < self.selectArray.count; i++) {
-        UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
-        button.frame = CGRectMake(0, i * (cellHeight+1), CC_SCREEN_WIDTH, cellHeight);
-        [button setTitle:[NSString stringWithFormat:@"%@",self.selectArray[i]] forState:UIControlStateNormal];
-        [button setBackgroundColor:[UIColor whiteColor]];
-        [button setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-        [button setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
-        [button addTarget:self action:@selector(buttonSelectAction:) forControlEvents:UIControlEventTouchUpInside];
-        button.tag = 1001+i;
-        [_sheetView addSubview:button];
+    [self.otherButtons addObject:[title copy]];
+    
+    return self.otherButtons.count - 1;
+    
+}
+
+#pragma mark - Private
+
+/**
+ *  @brief 初始化子视图
+ */
+- (void)installSubViews {
+    
+    self.frame = [UIScreen mainScreen].bounds;
+    
+    // 初始化遮罩视图
+    self.backgroundView = [[UIView alloc]initWithFrame:self.bounds];
+    self.backgroundView.backgroundColor = [UIColor colorWithWhite:0.142 alpha:1.000];
+    self.backgroundView.alpha = 0.0f;
+    [self addSubview:_backgroundView];
+    
+    
+    // 初始化TableView
+    self.tableView = [[UITableView alloc]initWithFrame:CGRectZero style:UITableViewStylePlain];
+    self.tableView.delegate = self;
+    self.tableView.dataSource = self;
+    self.tableView.bounces = NO;
+    self.tableView.showsVerticalScrollIndicator = NO;
+    self.tableView.separatorStyle = UITableViewCellSeparatorStyleNone;
+    [self.tableView setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+    [self addSubview:_tableView];
+    
+    // TableView加上高斯模糊效果
+    if (NSClassFromString(@"UIVisualEffectView") && !UIAccessibilityIsReduceTransparencyEnabled()) {
+        self.tableView.backgroundColor = [UIColor clearColor];
+        UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+        UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+        [blurEffectView setFrame:CGRectMake(0,0, self.bounds.size.width, self.tableViewHeight)];
+        
+        self.tableView.backgroundView = blurEffectView;
+    }
+    // 遮罩加上手势
+    UITapGestureRecognizer *tap = [[UITapGestureRecognizer alloc]initWithTarget:self action:@selector(hide)];
+    [self.backgroundView addGestureRecognizer:tap];
+    
+    
+    //监听屏幕旋转
+    [[NSNotificationCenter defaultCenter] addObserver:self
+                                             selector:@selector(statusBarOrientationChange:)
+                                                 name:UIApplicationDidChangeStatusBarOrientationNotification
+                                               object:nil];
+    
+}
+
+#pragma mark - Util
+/**
+ *  颜色转图片
+ *
+ *  @param color 颜色
+ *
+ *  @return 图片
+ */
+-(UIImage *)imageWithUIColor:(UIColor *)color{
+    CGRect rect=CGRectMake(0.0f, 0.0f, 1.0f, 1.0f);
+    UIGraphicsBeginImageContext(rect.size);
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    CGContextSetFillColorWithColor(context, [color CGColor]);
+    CGContextFillRect(context, rect);
+    UIImage *theImage = UIGraphicsGetImageFromCurrentImageContext();
+    UIGraphicsEndImageContext();
+    return theImage;
+}
+
+- (UIView *)selectedView{
+    UIImageView *view = [[UIImageView alloc] initWithFrame:CGRectMake(0, 0, self.bounds.size.height, ACTION_SHEET_BTN_HEIGHT)];
+    
+    view.image = [self imageWithUIColor:[UIColor lightGrayColor]];
+    
+    
+    return view;
+}
+
+
+#pragma mark - GET/SET
+
+/**
+ *  @brief TableView高度
+ *
+ *  @return TableView高度
+ */
+-(CGFloat)tableViewHeight {
+    
+    CGFloat tableHeight = 0.0f;
+    
+    if (_maxCount) {
+        if (self.buttonCount > _maxCount) {
+            tableHeight = ACTION_SHEET_BTN_HEIGHT * _maxCount;
+        }else{
+            tableHeight = self.buttonCount * ACTION_SHEET_BTN_HEIGHT;
+        }
+    }else{
+        tableHeight = self.buttonCount * ACTION_SHEET_BTN_HEIGHT;
     }
     
-    UIButton *cancelButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    cancelButton.frame = CGRectMake(0, viewHeight - cellHeight, CC_SCREEN_WIDTH, cellHeight);
-    cancelButton.backgroundColor = [UIColor whiteColor];
-    [cancelButton setTitle:[NSString stringWithFormat:@"%@",self.cancelString] forState:UIControlStateNormal];
-    [cancelButton setTitleColor:[UIColor blackColor] forState:UIControlStateNormal];
-    [cancelButton setTitleColor:[UIColor lightGrayColor] forState:UIControlStateHighlighted];
-    [cancelButton addTarget:self action:@selector(buttonSelectAction:) forControlEvents:UIControlEventTouchUpInside];
-    cancelButton.tag = 1000;
-    [_sheetView addSubview:cancelButton];
-    
-    return _sheetView;
-}
-
-- (void)buttonSelectAction:(UIButton *)btn{
-    UIButton *button = (UIButton *)btn;
-    NSInteger index = button.tag - 1000;
-    if (self.delegate && [self.delegate respondsToSelector:@selector(cc_actionSheetDidSelectedIndex:)]) {
-        [self.delegate cc_actionSheetDidSelectedIndex:index];
+    if (self.cancelText) {
+        return tableHeight+SHADOW_HEIGHT;
+    }else{
+       return tableHeight;
     }
-    [self hidSheetWithAnimation];
 }
 
--(void)SingleTap:(UITapGestureRecognizer*)recognizer
-{
-    [self hidSheetWithAnimation];
+
+/**
+ *  @brief 按钮的总个数(包括Title和取消)
+ *
+ *  @return 按钮的总个数
+ */
+-(NSInteger)buttonCount {
+    
+    NSInteger count = 0;
+    if(self.titleText && ![@"" isEqualToString:self.titleText]) {
+        count+=1;
+    }
+    
+    if(self.cancelText && ![@"" isEqualToString:self.cancelText]) {
+        count+=1;
+    }
+    
+    count+=self.otherButtons.count;
+    
+    
+    return count;
+    
 }
 
-- (void)hidActionSheet{
-    _sheetWindow.hidden = YES;
-    _sheetWindow = nil;
+#pragma mark - UITableViewDelegate
+-(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    return ACTION_SHEET_BTN_HEIGHT;
+    
+}
+
+-(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    
+    if(section == 0 && self.titleText) {
+        
+        return ACTION_SHEET_BTN_HEIGHT;
+        
+    }
+    
+    if(section == 1 && self.cancelText) {
+        
+        return 5.0f;
+        
+    }
+    
+    return 0.0f;
+    
+}
+
+-(UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    
+    if(section == 0 && self.titleText) {
+        
+        UILabel *label = [[UILabel alloc]init];
+        [label setFont:[UIFont systemFontOfSize:15.0f]];
+        [label setText:self.titleText];
+        [label setTextAlignment:NSTextAlignmentCenter];
+        if (self.titleColor) {
+            label.textColor = self.titleColor;
+        }else{
+            [label setTextColor:[UIColor grayColor]];
+        }
+        [label setAdjustsFontSizeToFitWidth:YES];
+
+        if (NSClassFromString(@"UIVisualEffectView") && !UIAccessibilityIsReduceTransparencyEnabled()) {
+            label.backgroundColor = [UIColor clearColor];
+            UIBlurEffect *blurEffect = [UIBlurEffect effectWithStyle:UIBlurEffectStyleExtraLight];
+            UIVisualEffectView *blurEffectView = [[UIVisualEffectView alloc] initWithEffect:blurEffect];
+            [blurEffectView setFrame:CGRectMake(0,0, self.tableView.bounds.size.width, ACTION_SHEET_BTN_HEIGHT)];
+            
+            [label addSubview:blurEffectView];
+        }
+        
+        
+        UIImageView *sepLine = [[UIImageView alloc]initWithImage:[self imageWithUIColor:[UIColor darkGrayColor]]];
+        sepLine.frame = CGRectMake(0, ACTION_SHEET_BTN_HEIGHT - 0.3f, self.tableView.bounds.size.width, 0.3f);
+        [label addSubview:sepLine];
+        
+        return label;
+    }
+    
+    
+    if(section == 1 && self.cancelText) {
+        
+        UIView *view = [[UIView alloc] init];
+        
+        UIImageView *sepLine = [[UIImageView alloc]initWithImage:[self imageWithUIColor:[UIColor grayColor]]];
+        sepLine.frame = CGRectMake(0,SHADOW_HEIGHT-0.3f, self.tableView.bounds.size.width, 0.3f);
+        [view addSubview:sepLine];
+        
+        return view;
+        
+    }
+    
+    return nil;
+    
+}
+
+-(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    [tableView deselectRowAtIndexPath:indexPath animated:YES];
+    
+    NSInteger index = self.otherButtons.count;
+    
+    if(indexPath.section == 0) {
+        index = indexPath.row;
+    }
+    
+    
+    // 委托方式返回结果
+    if([_delegate respondsToSelector:@selector(actionSheet:clickedButtonAtIndex:)]) {
+        
+        [_delegate actionSheet:self clickedButtonAtIndex:index];
+        
+    }
+    
+    // Block方式返回结果
+    if(self.block) {
+        
+        self.block(index);
+        
+    }
+    
+    [self hide];
+    
+}
+
+#pragma mark - UITableViewDataSource
+
+-(UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    
+    static NSString *identify = @"actionsheetCell";
+    
+    CCActionTableCell *cell = [tableView dequeueReusableCellWithIdentifier:identify];
+    if(!cell) {
+        
+        cell = [[CCActionTableCell alloc]initWithStyle:UITableViewCellStyleDefault
+                                     reuseIdentifier:identify];
+        
+        if (NSClassFromString(@"UIVisualEffectView") ) {
+            cell.backgroundColor = [UIColor colorWithWhite:1 alpha:0.6];
+        }
+
+        cell.layer.masksToBounds = YES;
+        if (self.style) {
+            cell.sheetStyle = (CCActionSheetCellStyle)self.style;
+        }
+        cell.boundsTableView = self.tableView;
+        // 加上分割线
+        UIImageView *sepLine = [[UIImageView alloc]initWithImage:[self imageWithUIColor:[UIColor grayColor]]];
+        sepLine.frame = CGRectMake(0, ACTION_SHEET_BTN_HEIGHT - 0.3f, [UIScreen mainScreen].bounds.size.width, 0.3f);
+        [sepLine setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+        [cell addSubview:sepLine];
+    }
+    
+    if(indexPath.section == 0){
+        if (_iconImageNameArray.count > indexPath.row) {
+            cell.iconImageName = _iconImageNameArray[indexPath.row];
+        }
+        cell.textString = self.otherButtons[indexPath.row];
+    }
+    
+    if(indexPath.section == 1){
+        if (_iconImageNameArray.count > self.otherButtons.count) {
+            cell.iconImageName = [_iconImageNameArray lastObject];
+        }
+        cell.textString = self.cancelText;
+    }
+    
+    
+    return cell;
+    
+}
+
+-(NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    
+    if(self.cancelText) {
+        
+        return 2;
+        
+    }
+    
+    return 1;
+    
+}
+
+-(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    if(section == 0) {
+        
+        return self.otherButtons.count;
+        
+    }
+    
+    if(section == 1 && self.cancelText) {
+        
+        return 1;
+        
+    }
+    
+    return 0;
+    
+}
+
+
+#pragma mark - Observer
+
+// 监听屏幕旋转方向
+-(void)statusBarOrientationChange:(NSNotification *)notification {
+    
+    UIInterfaceOrientation orientation = [[UIApplication sharedApplication] statusBarOrientation];
+    
+    CGSize screenSize = [UIScreen mainScreen].bounds.size;
+    
+    self.frame = CGRectMake(0, 0, screenSize.width, screenSize.height);
+    
+    // iOS8以下宽高不会自动交换
+    if(orientation != UIInterfaceOrientationPortrait) {
+        
+        if([UIDevice currentDevice].systemVersion.floatValue < 8.0f) {
+            
+            self.frame = CGRectMake(0, 0, screenSize.height, screenSize.width);
+            
+        }
+    }
+    
+    self.backgroundView.frame = self.frame;
+    
+    CGRect tableViewRect = self.tableView.frame;
+    
+    if(orientation == UIInterfaceOrientationPortrait) {
+        tableViewRect.origin.y+=fabs(screenSize.height-screenSize.width);
+    }else {
+        tableViewRect.origin.y = self.frame.size.height - self.tableViewHeight;
+    }
+    
+    
+    self.tableView.frame = tableViewRect;
+    
+    [self.tableView reloadData];
+    
 }
 
 @end
+
