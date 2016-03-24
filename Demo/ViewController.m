@@ -42,7 +42,24 @@
     
     sheet.iconImageNameArray = @[@"icon_connected",@"icon_connected",@"icon_connected",@"icon_connected",@"icon_connected",@"icon_connected",@"icon_connected",@"icon_connected",@"icon_connected"];
     
+//    UIView *view = [[UIView alloc] initWithFrame:CGRectMake(0, 0, 100, 100)];
+//    view.backgroundColor = [UIColor redColor];
+//    UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
+//    button.frame = CGRectMake(0, 0, 50, 30);
+//    button.backgroundColor = [UIColor redColor];
+//    [button setTitle:@"click" forState:UIControlStateNormal];
+//    [button addTarget:self action:@selector(buttonClicked) forControlEvents:UIControlEventTouchUpInside];
+//    [view addSubview:button];
+    
+    
+    
+//    CCActionSheet *sheet = [[CCActionSheet alloc] initWithCustomView:view];
+
     [sheet show];
+}
+
+- (void)buttonClicked{
+    NSLog(@"11111");
 }
 
 - (void)cc_actionSheetDidSelectedIndex:(NSInteger)index{

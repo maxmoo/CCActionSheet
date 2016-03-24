@@ -50,7 +50,6 @@ typedef enum : NSUInteger {
 @property (strong,nonatomic) NSString *cancelText;
 
 @property (weak, nonatomic) id<CCActionSheetDelegate> delegate;
-
 //最多可显示maxcount个cell的高度
 @property (assign, nonatomic) CGFloat maxCount;
 //cell的样式，有两种：一种居中显示，另一种左对齐显示并带有icon
@@ -66,7 +65,7 @@ typedef enum : NSUInteger {
  *  @param cancelButtonTitle      取消按钮标题
  *  @param otherButtonTitles      其他按钮标题
  *
- *  @return PQActionSheet
+ *  @return ActionSheet
  */
 - (instancetype)initWithTitle:(NSString *)title
                      delegate:(id<CCActionSheetDelegate>)delegate
@@ -83,13 +82,16 @@ typedef enum : NSUInteger {
  *  @param cancelButtonTitle 取消按钮标题
  *  @param otherButtonTitles 其他按钮标题
  *
- *  @return PQActionSheet
+ *  @return ActionSheet
  */
 - (instancetype)initWithTitle:(NSString *)title
                clickedAtIndex:(ClickedIndexBlock)block
             cancelButtonTitle:(NSString *)cancelButtonTitle
             otherButtonTitles:(NSString *)otherButtonTitles, ...;
 
+
+//直接添加自定义视图
+- (instancetype)initWithCustomView:(UIView *)customView;
 
 
 /**

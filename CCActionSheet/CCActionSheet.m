@@ -23,6 +23,8 @@
 @property (assign,nonatomic) CGFloat tableViewHeight;
 @property (assign,nonatomic) NSInteger buttonCount;
 
+@property (strong,nonatomic) UIView *customView;
+
 @end
 
 @implementation CCActionSheet
@@ -94,6 +96,16 @@
     return self;
 }
 
+//添加自定义视图
+- (instancetype)initWithCustomView:(UIView *)customView{
+    self = [super init];
+    if (self) {
+        self.customView = customView;
+        [self installSubViews];
+    }
+    return self;
+}
+
 - (void)dealloc {
     
     [[NSNotificationCenter defaultCenter] removeObserver:self];
@@ -110,6 +122,7 @@
     [[UIApplication sharedApplication].keyWindow addSubview:self];
 
     self.tableView.frame = CGRectMake(0.0f,self.bounds.size.height, self.bounds.size.width, self.tableViewHeight);
+    NSLog(@"%@",self.tableView);
     __weak typeof(self) weakSelf = self;
     
     if([_delegate respondsToSelector:@selector(willPresentActionSheet:)]) {
@@ -266,6 +279,11 @@
  */
 -(CGFloat)tableViewHeight {
     
+    if (self.customView) {
+        NSLog(@"%f",self.customView.bounds.size.height);
+        return self.customView.bounds.size.height;
+    }
+    
     CGFloat tableHeight = 0.0f;
     
     if (_maxCount) {
@@ -312,11 +330,18 @@
 #pragma mark - UITableViewDelegate
 -(CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath {
     
-    return ACTION_SHEET_BTN_HEIGHT;
+    if (self.customView) {
+        return self.customView.bounds.size.height;
+    }
     
+    return ACTION_SHEET_BTN_HEIGHT;
 }
 
 -(CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section {
+    
+    if (self.customView) {
+        return 0.0f;
+    }
     
     if(section == 0 && self.titleText) {
         
@@ -429,14 +454,21 @@
             cell.sheetStyle = (CCActionSheetCellStyle)self.style;
         }
         cell.boundsTableView = self.tableView;
-        // 加上分割线
-        UIImageView *sepLine = [[UIImageView alloc]initWithImage:[self imageWithUIColor:[UIColor grayColor]]];
-        sepLine.frame = CGRectMake(0, ACTION_SHEET_BTN_HEIGHT - 0.3f, [UIScreen mainScreen].bounds.size.width, 0.3f);
-        [sepLine setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
-        [cell addSubview:sepLine];
+        
+        if (!self.customView) {
+            // 加上分割线
+            UIImageView *sepLine = [[UIImageView alloc]initWithImage:[self imageWithUIColor:[UIColor grayColor]]];
+            sepLine.frame = CGRectMake(0, ACTION_SHEET_BTN_HEIGHT - 0.3f, [UIScreen mainScreen].bounds.size.width, 0.3f);
+            [sepLine setAutoresizingMask:UIViewAutoresizingFlexibleWidth];
+            [cell addSubview:sepLine];
+        }
     }
     
     if(indexPath.section == 0){
+        if (indexPath.row == 0 && self.customView) {
+            self.customView.center = CGPointMake(self.tableView.bounds.size.width/2,self.tableView.bounds.size.height/2);
+            [cell.contentView addSubview:self.customView];
+        }
         if (_iconImageNameArray.count > indexPath.row) {
             cell.iconImageName = _iconImageNameArray[indexPath.row];
         }
@@ -468,6 +500,10 @@
 }
 
 -(NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    
+    if (self.customView) {
+        return 1;
+    }
     
     if(section == 0) {
         
