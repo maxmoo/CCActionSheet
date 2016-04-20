@@ -16,7 +16,7 @@ CCActionSheet有两种形式的list
 ###使用
 ####你可以使用cocoapods，也可以手动下载CCActionSheet中的文件，引用头文件#import "CCActionSheet.h"
 
-pod 'CCActionSheet', '~> 1.0.1'
+`pod 'CCActionSheet', '~> 1.0.1'`
 
 
 回调方式使用了两种，这里只举例使用block回调。
