@@ -14,6 +14,11 @@ CCActionSheet有两种形式的list
 实现样式是模仿微信自定义actionSheet实现的。相似度还是较高的QAQ。
 
 ###使用
+####你可以使用cocoapods，也可以手动下载CCActionSheet中的文件，引用头文件#import "CCActionSheet.h"
+
+pod 'CCActionSheet', '~> 1.0.1'
+
+
 回调方式使用了两种，这里只举例使用block回调。
 
 `初始化`
