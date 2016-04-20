@@ -9,4 +9,7 @@ s.author		= {'maxmoo' => 'maxmoo@163.com'}
 s.ios.deployment_target = '8.0'
 s.source		= {:git => 'https://github.com/maxmoo/CCActionSheet.git',:tag => s.version}
 s.requires_arc 		= true
+s.source_files	= 'CCActionSheet/*.{h,m}'
+s.resources 	= 'CCActionSheet/*.{h,m}'
+s.frameworks	= 'UIKit'
 end
