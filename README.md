@@ -44,6 +44,5 @@ CCActionSheet有两种形式的list
     [sheet show];
 >
 
-####最后需要感谢[这位前辈](https://github.com/docee/PQActionSheet),因为之前自己是使用UIButton来实现的，现在完成的这个版本其中很大一部分是借鉴他的，在此表示感谢🙏！
 
 也可以到我的个人博客中查看一些细节：[http://www.maxmoo.me](http://www.maxmoo.me)。
