@@ -3,11 +3,17 @@
 <!--![](https://github.com/maxmoo/CCActionSheet/p_sheet.gif)-->
 
 CCActionSheet有两种形式的list
+
 ####下图为其一：只显示文字，处于中间位置。
+
 <img src="https://github.com/maxmoo/CCActionSheet/blob/master/Demo/center.gif" alt="" style="max-width:100%;">
+
 ####下图为其二：显示icon和文字，文字居左对齐。
+
 <img src="https://github.com/maxmoo/CCActionSheet/blob/master/Demo/list.gif" alt="" style="max-width:100%;">
+
 ####下面是一种特殊的显示方式，设置属性maxcount（显示的最高高度＝maxcount*cellheight），其余滑动显示。
+
 <img src="https://github.com/maxmoo/CCActionSheet/blob/master/Demo/scroll.gif" alt="" style="max-width:100%;">
 
 ###模仿微信自定义actionSheet
@@ -43,6 +49,3 @@ CCActionSheet有两种形式的list
 >
     [sheet show];
 >
-
-
-也可以到我的个人博客中查看一些细节：[http://www.maxmoo.me](http://www.maxmoo.me)。
