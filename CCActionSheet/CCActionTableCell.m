@@ -49,6 +49,8 @@
 
 - (void)initSubViews{
     _titleLabel = [[UILabel alloc] initWithFrame:CGRectMake(70, 10, self.bounds.size.width -140,self.bounds.size.height - 20 )];
+    _titleLabel.textColor = [UIColor blackColor];
+    _titleLabel.font = [UIFont systemFontOfSize:15.0f weight:UIFontWeightRegular];
     [self.contentView addSubview:_titleLabel];
     
     _iconImageView = [[UIImageView alloc] initWithFrame:CGRectMake(10, 5, 32, 32)];
