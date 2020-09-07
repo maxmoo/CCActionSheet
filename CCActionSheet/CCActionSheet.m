@@ -295,7 +295,14 @@
     }else{
         tableHeight = self.buttonCount * ACTION_SHEET_BTN_HEIGHT;
     }
-    
+  
+    if (@available(iOS 11.0, *)) {
+        CGFloat a =  [[UIApplication sharedApplication] delegate].window.safeAreaInsets.bottom;
+        if (a > 0) {
+            tableHeight += a;
+        }
+    }
+  
     if (self.cancelText) {
         return tableHeight+SHADOW_HEIGHT;
     }else{
